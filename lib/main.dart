@@ -337,43 +337,92 @@ class ProfilePage extends StatelessWidget {
   const ProfilePage({required this.user});
 
   void _logout(BuildContext context) {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginPage()),
+    // Affiche le toast de confirmation
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Déconnexion réussie'),
+        backgroundColor: Color(0xFFA67C52),
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: 2),
+      ),
     );
+
+    // Attendre un petit délai pour laisser le toast apparaître avant le push
+    Future.delayed(Duration(seconds: 1), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'Bienvenue ${user.prenom} ${user.nom}',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 10),
-          Text('Email : ${user.email}', style: TextStyle(fontSize: 16)),
-          SizedBox(height: 20),
-          ElevatedButton.icon(
-            onPressed: () => _logout(context),
-            icon: Icon(Icons.logout),
-            label: Text('Déconnexion'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFFA67C52),
-              foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Profil Cavalier'),
+        backgroundColor: Color(0xFFA67C52),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Card(
+          elevation: 8,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.account_circle, size: 100, color: Color(0xFFA67C52)),
+                SizedBox(height: 16),
+                Text(
+                  '${user.prenom} ${user.nom}',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                Divider(height: 32, thickness: 1),
+                ListTile(
+                  leading: Icon(Icons.email, color: Colors.brown),
+                  title: Text('Email'),
+                  subtitle: Text(user.email),
+                ),
+                ListTile(
+                  leading: Icon(Icons.badge, color: Colors.brown),
+                  title: Text('ID utilisateur'),
+                  subtitle: Text(user.id),
+                ),
+                ListTile(
+                  leading: Icon(Icons.verified_user, color: Colors.brown),
+                  title: Text('Rôle'),
+                  subtitle: Text('Cavalier'),
+                ),
+                SizedBox(height: 20),
+
+                // 🔓 Bouton Déconnexion avec toast
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: ElevatedButton.icon(
+                    onPressed: () => _logout(context),
+                    icon: Icon(Icons.logout),
+                    label: Text('Déconnexion'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFA67C52),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
 }
+
 
 class Cours {
   final String id;
